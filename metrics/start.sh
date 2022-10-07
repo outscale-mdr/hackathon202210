@@ -70,6 +70,9 @@ $SCP outscale@$app1ip:/data/output/* output/
 
 # Process collected files
 ./process.py
+if [ $? -ne 0 ]; then
+    exit 1
+fi
 
 # === Outputs ===
 # 1. Total consumption of all VMs in Watts
