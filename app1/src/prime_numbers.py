@@ -10,8 +10,8 @@ def prime_numbers(n):
     prime = [True for _ in range(n + 1)]
 
     p = 2
-    while (p * p <= n):
-        if (prime[p] == True):
+    while p * p <= n:
+        if prime[p]:
             for i in range(p * p, n + 1, p):
                 prime[i] = False
         p += 1
