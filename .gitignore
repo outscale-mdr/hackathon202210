@@ -1,6 +1,9 @@
 # Config files
 env_init.sh
 
+# IDE files
+.idea/
+
 # Local .terraform directories
 **/.terraform/*
 
