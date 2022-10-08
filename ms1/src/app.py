@@ -1,16 +1,6 @@
 import psycopg2
 from flask import Flask, jsonify, request
 
-# See README.md for details
-
-# Don't forget to relaod the service after any code change: 
-#   ./ms1_connect.sh
-#   sudo systemctl restart ms1.service
-# 
-# To see the errors:
-#   ./ms1_connect.sh
-#   journalctl -u ms1.service
-
 HOST = "db1"
 DATABASE = "postgres"
 USERNAME = "postgres"
