@@ -1,4 +1,4 @@
-# x_max_v3.py : utilisation de max
+# x_max_v3.py : utilisation de max (et rename de la variable max)
 
 # computing a list of max from a key/value input
 # input :
@@ -38,8 +38,8 @@ def get_x_max(path, n):
     s = flist.read()
     keys = []
     while len(keys) < nbmax:
-        max = max_in_list(s)
-        keys.append(max.split(",")[0])
-        s = s.replace("(" + str(max) + ");", "").replace(";(" + str(max) + ")", "")
+        maxi = max_in_list(s)
+        keys.append(maxi.split(",")[0])
+        s = s.replace("(" + str(maxi) + ");", "").replace(";(" + str(maxi) + ")", "")
 
     return str(keys)
