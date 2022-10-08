@@ -1,4 +1,4 @@
-# x_max_v0.py
+# x_max_v1.py
 # computing a list of max from a key/value input
 # input :
 #     * a filename to a file with the list of couple of letter(key) and an integer (value) as (a,3) separate by ';' # output
@@ -14,9 +14,6 @@
 # n must be changed to 1 of negative or null
 # the naive algorithm implemeted
 # run is the function called by the test runner
-
-
-import py_compile
 
 
 def max_in_list(s):
