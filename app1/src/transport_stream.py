@@ -27,28 +27,12 @@ from optparse import OptionParser
 class SystemClock:
     def __init__(self):
         self.PCR = 0x0
-    def setPCR(self, PCR):
-        self.PCR = PCR
-    def getPCR(self):
-        return self.PCR
 
 class PESPacketInfo:
     def __init__(self):
         self.PTS = 0
         self.streamID = 0
         self.AUType = ""
-    def setPTS(self, PTS):
-        self.PTS = PTS
-    def getPTS(self):
-        return self.PTS
-    def setStreamID(self, streamID):
-        self.streamID = streamID
-    def setAUType(self, auType):
-        self.AUType = auType
-    def getStreamID(self):
-        return self.streamID
-    def getAUType(self):
-        return self.AUType
 
 def readFile(fileHandle, startPos, width):
     fileHandle.seek(startPos,0)
@@ -95,7 +79,7 @@ def parseAdaptation_Field(fileHandle, n, PCR):
             PCR_val |= (time5 & 0x01) << 8
             PCR_val |= time6
 
-            PCR.setPCR(PCR_val)
+            PCR.PCR = PCR_val
     return [adaptation_field_length + 1, flags]
 
 def getPTS(fileHandle, n):
@@ -138,7 +122,7 @@ def parseIndividualPESPayload(fileHandle, n):
 def parsePESHeader(fileHandle, n, PESPktInfo):
     stream_ID = readFile(fileHandle, n+3, 1)
     PES_packetLength = readFile(fileHandle, n+4, 2)
-    PESPktInfo.setStreamID(stream_ID)
+    PESPktInfo.streamID = stream_ID
 
     k = 6
 
@@ -158,11 +142,11 @@ def parsePESHeader(fileHandle, n, PESPktInfo):
 
         if (PTS_DTS_flag == 0x2):
             PTS = getPTS(fileHandle, n+9)
-            PESPktInfo.setPTS(PTS)
+            PESPktInfo.PTS = PTS
 
         elif (PTS_DTS_flag == 0x3):
             PTS = getPTS(fileHandle, n+9)
-            PESPktInfo.setPTS(PTS)
+            PESPktInfo.PTS = PTS
 
             DTS = getPTS(fileHandle, n+14)
         else:
@@ -170,7 +154,7 @@ def parsePESHeader(fileHandle, n, PESPktInfo):
             return
 
         auType = parseIndividualPESPayload(fileHandle, n+k)
-        PESPktInfo.setAUType(auType)
+        PESPktInfo.AUType = auType
 
 def parsePATSection(fileHandle, k):
 
@@ -488,3 +472,6 @@ def parse_transport_stream(filename):
     stats = getPidStats(pesPidList, pcr, pts)
     logging.info (stats)
     return stats
+
+
+print(parse_transport_stream("../../media/test_arte.ts"))
