@@ -30,12 +30,11 @@ def decode_hex_to_dec(hexa_string):
     for i in range(len_string, 0, -2):
         reversed_hexa_string += hexa_string[i-2:i]
     
-    n = int(reversed_hexa_string, 16)
-    l = len(hexa_string)
-    cmplt = int("F"*l,16)
-    cmplt2 = int("8" + "0" * (l - 1), 16)
-    n = n & cmplt
-    return n | (-(n & cmplt2))
+    n = int(reversed_hexa_string, 16)%256
+    if n<128:
+        return n
+    else:
+        return n-256
 
 
 def decode_date(hexa_string):
