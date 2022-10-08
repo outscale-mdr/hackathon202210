@@ -145,17 +145,17 @@ def frame_to_json(frame):
 
 
 def decode_frame(frame):
-    str=""
+    s = ""
     if len(frame) != 144:
-        str="Invalid frame"
+        s = "Invalid frame"
     elif frame[0:2] != "79":
-        str="Frame doesn't start with 79"
+        s = "Frame doesn't start with 79"
     elif frame[2:6] not in FOS_LIST:
-        str="Invalid FOS"
+        s = "Invalid FOS"
     else:
         frame_dict = frame_to_json(frame)
-        str=json.dumps(frame_dict, indent=4)
-    return str
+        s = json.dumps(frame_dict, indent=4)
+    return s
 
 
 
