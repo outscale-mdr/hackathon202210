@@ -28,19 +28,23 @@ def max_in_list(s):
     return key + "," + str(m)
 
 
-def get_x_max(path, n):
-    nbmax = int(n)
-    if nbmax < 1:
-        nbmax = 1
+def get_x_max(path,n):
+    nbmax=int(n)
+    if nbmax<1: 
+        nbmax=1  
 
-    flist = open(path, "r")
-    s = flist.read()
-    keys = []
-    while len(keys) < nbmax:
-        maxi = max_in_list(s)
-        keys.append(maxi.split(",")[0])
-        s = s.replace("(" + str(maxi) + ");", "").replace(";(" + str(maxi) + ")", "")
+    flist=open(path,'r')
+    s=flist.read()
+    keys=[]
+    while len(keys) < nbmax :
+        max=max_in_list(s)
+        keys.append(max.split(",")[0])
+        s=s.replace("("+str(max)+");","").replace(";("+str(max)+")","")
 
     return str(keys)
 
-get_x_max("../../../../Desktop/media/xmax_3.txt", 1)
+#get_x_max("/Users/lauralan/media/xmax_3.txt", 1)
+
+#max_in_list("(a,3);(b,4)")
+
+#open("/Users/lauralan/media/xmax_3.txt",'r')
