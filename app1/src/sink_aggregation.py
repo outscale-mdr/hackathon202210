@@ -96,12 +96,18 @@ def sink_aggregation(json_data):
 
 def find_min(array, key):
     if len(array) > 0:
-        min = array[0][key]
-        for i in range(len(array)):
-            if array[i][key] != None:
-                if array[i][key] < min:
-                    min = array[i][key]
-        return min
+        # min = array[0][key]
+        # for i in range(len(array)):
+        #     if array[i][key] != None:
+        #         if array[i][key] < min:
+        #             min = array[i][key]
+        # return min
+        import numpy as np
+
+        array = np.asarray(array)
+        array[array == None] = 10**30
+        array = np.asarray(array, dtype=int)
+        return np.min(array[:, key])
     return None
 
 
