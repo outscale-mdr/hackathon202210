@@ -1,7 +1,7 @@
 SSH="ssh -o StrictHostKeyChecking=no -i ~/.ssh/hackathon.rsa"
 SCP="scp -i ~/.ssh/hackathon.rsa"
 
-if [ -n "$1" ]; then
+if [ -n "$1" ] && [ "$1" != "app1" ]; then
     mkdir backup
     cp -r expected input backup/
     rm expected/* input/*
@@ -103,14 +103,14 @@ $SCP outscale@$app1ip:/data/output/* output/
 # Process collected files
 ./process.py
 if [ $? -ne 0 ]; then
-    if [ -n "$1" ]; then
+    if [ -n "$1" ] && [ "$1" != "app1" ]; then
         cp backup/expected/* expected/
         cp backup/input/* input/
     fi
     exit 1
 fi
 
-if [ -n "$1" ]; then
+if [ -n "$1" ] && [ "$1" != "app1" ]; then
     cp backup/expected/* expected/
     cp backup/input/* input/
 fi
