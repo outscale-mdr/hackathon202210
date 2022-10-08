@@ -43,7 +43,7 @@ def decode_date(hexa_string):
     month = int(hexa_string[6:8], 16)%16
     # year
     year_thousand = 1900 + 100 * ((int(hexa_string[2:4], 16)%128)//32)
-    year_cut = int(str("{0:08b}".format(int(hexa_string[6:8], 16)))[0:4] + str("{0:08b}".format(int(hexa_string[4:6], 16)))[0:3],2)
+    year_cut =  ((int(hexa_string[4:6], 16))//32) + (8*((int(hexa_string[6:8], 16))//16))
     year = year_thousand + year_cut
 
     date = datetime.datetime(year, month, day, hour, minute)
