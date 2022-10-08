@@ -402,7 +402,7 @@ def parsePcrPts(fileHandle):
     PCRList = []
 
     try:
-        while True)=:
+        while True:
 
             PacketHeader = readFile(fileHandle,n,4)
 
