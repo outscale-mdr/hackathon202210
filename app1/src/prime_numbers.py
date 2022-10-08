@@ -12,6 +12,7 @@ def prime_numbers(n):
                if (n % i) == 0:
                     return False
           return True
+
      result = []
      for i in range(n + 1):
           if is_prime(i):
