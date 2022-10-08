@@ -42,3 +42,5 @@ def get_x_max(path, n):
         s = s.replace("(" + str(maxi) + ");", "").replace(";(" + str(maxi) + ")", "")
 
     return str(keys)
+
+get_x_max("../../../../Desktop/media/xmax_3.txt", 1)
