@@ -57,8 +57,17 @@ jobs:
       run : |
         cd metrics
         ./start.sh "$GITHUB_HEAD_REF" | tee one.txt
+        if [ $? -ne 0 ]; then
+          exit 1
+        fi
         ./start.sh "$GITHUB_HEAD_REF" | tee two.txt
+        if [ $? -ne 0 ]; then
+          exit 1
+        fi
         ./start.sh "$GITHUB_HEAD_REF" | tee three.txt
+        if [ $? -ne 0 ]; then
+          exit 1
+        fi
         one=$(grep "TOTAL" one.txt | awk '{ print $2 }' | awk -F '(' '{ print $1 }')
         two=$(grep "TOTAL" two.txt | awk '{ print $2 }' | awk -F '(' '{ print $1 }')
         three=$(grep "TOTAL" three.txt | awk '{ print $2 }' | awk -F '(' '{ print $1 }')
