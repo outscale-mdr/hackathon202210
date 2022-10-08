@@ -68,8 +68,7 @@ def readFile(fileHandle, startPos, width):
             raise IOError
         return struct.unpack('>B',string[:1])[0]
 
-def parseAdaptation_Field(fileHandle, startPos, PCR):
-    n = startPos
+def parseAdaptation_Field(fileHandle, n, PCR):
     flags = 0
     adaptation_field_length = readFile(fileHandle,n,1)
     if adaptation_field_length > 0:
@@ -96,9 +95,7 @@ def parseAdaptation_Field(fileHandle, startPos, PCR):
             PCR.setPCR(PCR_val)
     return [adaptation_field_length + 1, flags]
 
-def getPTS(fileHandle, startPos):
-    n = startPos
-
+def getPTS(fileHandle, n):
     time1 = readFile(fileHandle,n,1)
     time2 = readFile(fileHandle,n+1,1)
     time3 = readFile(fileHandle,n+2,1)
@@ -117,8 +114,7 @@ def getPTS(fileHandle, startPos):
 
     return PTS
 
-def parseIndividualPESPayload(fileHandle, startPos):
-    n = startPos
+def parseIndividualPESPayload(fileHandle, n):
     local = readFile(fileHandle,n,4)
     k = 0
     while((local&0xFFFFFF00) != 0x00000100):
@@ -135,8 +131,7 @@ def parseIndividualPESPayload(fileHandle, startPos):
         else:
             return "non_IDR_picture"
 
-def parsePESHeader(fileHandle, startPos,PESPktInfo):
-    n = startPos
+def parsePESHeader(fileHandle, n, PESPktInfo):
     stream_ID = readFile(fileHandle, n+3, 1)
     PES_packetLength = readFile(fileHandle, n+4, 2)
     PESPktInfo.setStreamID(stream_ID)
