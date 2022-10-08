@@ -87,7 +87,7 @@ def clone_items(product_id, new_product_id, coef):
         )
         conn.commit()
 
-        return avant
+        return avant, 200
 
     except Exception as e:
         return jsonify(e.messages), 400
