@@ -1,6 +1,8 @@
 """
+
 This file is used to parse the mpeg-ts file in order to get the
 delta between PCR and PTS and in order to get stream element statistics
+
 MPEG-TS stream is the usual format used for IPTV (TV over IP), the format
 is basic, here some elements:
     - MPEG-TS is composed of 188 Bytes packets;
@@ -14,6 +16,7 @@ is basic, here some elements:
     - During streaming (real time), the delta between the packet arrival
     and the PCR is very important, this is something usually monitored
     in the stream pipeline.
+
 """
 
 import sys
@@ -48,7 +51,8 @@ class PESPacketInfo:
         return self.AUType
 
 def readFile(fileHandle, startPos, width):
-    fileHandle.seek(startPos,0)
+    if startPos != -1:
+        fileHandle.seek(startPos,0)
     if width == 4:
         string = fileHandle.read(4)
         if len(string) != 4:
@@ -65,20 +69,19 @@ def readFile(fileHandle, startPos, width):
             raise IOError
         return struct.unpack('>B',string[:1])[0]
 
-def parseAdaptation_Field(fileHandle, startPos, PCR):
-    n = startPos
+def parseAdaptation_Field(fileHandle, n, PCR):
     flags = 0
     adaptation_field_length = readFile(fileHandle,n,1)
     if adaptation_field_length > 0:
-        flags = readFile(fileHandle,n+1,1)
+        flags = readFile(fileHandle,-1,1)
         PCR_flag = (flags>>4)&0x1
-        if PCR_flag == 1:
-            time1 = readFile(fileHandle,n+2,1)
-            time2 = readFile(fileHandle,n+3,1)
-            time3 = readFile(fileHandle,n+4,1)
-            time4 = readFile(fileHandle,n+5,1)
-            time5 = readFile(fileHandle,n+6,1)
-            time6 = readFile(fileHandle,n+7,1)
+        if PCR_flag:
+            time1 = readFile(fileHandle,-1,1)
+            time2 = readFile(fileHandle,-1,1)
+            time3 = readFile(fileHandle,-1,1)
+            time4 = readFile(fileHandle,-1,1)
+            time5 = readFile(fileHandle,-1,1)
+            time6 = readFile(fileHandle,-1,1)
 
             PCR_val  = time1 << 25
             PCR_val |= time2 << 17
@@ -93,9 +96,7 @@ def parseAdaptation_Field(fileHandle, startPos, PCR):
             PCR.setPCR(PCR_val)
     return [adaptation_field_length + 1, flags]
 
-def getPTS(fileHandle, startPos):
-    n = startPos
-
+def getPTS(fileHandle, n):
     time1 = readFile(fileHandle,n,1)
     time2 = readFile(fileHandle,n+1,1)
     time3 = readFile(fileHandle,n+2,1)
@@ -114,8 +115,7 @@ def getPTS(fileHandle, startPos):
 
     return PTS
 
-def parseIndividualPESPayload(fileHandle, startPos):
-    n = startPos
+def parseIndividualPESPayload(fileHandle, n):
     local = readFile(fileHandle,n,4)
     k = 0
     while((local&0xFFFFFF00) != 0x00000100):
@@ -132,8 +132,7 @@ def parseIndividualPESPayload(fileHandle, startPos):
         else:
             return "non_IDR_picture"
 
-def parsePESHeader(fileHandle, startPos,PESPktInfo):
-    n = startPos
+def parsePESHeader(fileHandle, n, PESPktInfo):
     stream_ID = readFile(fileHandle, n+3, 1)
     PES_packetLength = readFile(fileHandle, n+4, 2)
     PESPktInfo.setStreamID(stream_ID)
@@ -399,12 +398,12 @@ def parsePcrPts(fileHandle):
     PCRList = []
 
     try:
-        while(True):
+        while True:
 
             PacketHeader = readFile(fileHandle,n,4)
 
             syncByte = (PacketHeader>>24)
-            if (syncByte != 0x47):
+            if syncByte != 0x47:
                 logging.error ('Ooops! Can NOT found Sync_Byte! maybe something wrong with the file')
                 break
 
