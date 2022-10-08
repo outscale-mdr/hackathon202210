@@ -25,7 +25,7 @@ def to_unsigned(hexa_string, n):
 
 
 def decode_hex_to_dec(hexa_string):
-    n = int(hexa_string[:2], 16)
+    n = int(hexa_string, 16)
     if n<128:
         return n
     else:
@@ -61,13 +61,13 @@ def frame_to_json(frame):
         ("CustomerSerialNumber", frame[26:58]),
         ("Backflow",
             OrderedDict([
-                ("value", decode_hex_to_dec(frame[58:66])),
+                ("value", decode_hex_to_dec(frame[58:60])),
                 ("unit", "m3")
             ])
          ),
         ("SignalStrenght",
              OrderedDict([
-                 ("value", decode_hex_to_dec(frame[66:70])),
+                 ("value", decode_hex_to_dec(frame[66:68])),
                  ("unit", "dbm")
             ])
          ),
@@ -80,13 +80,13 @@ def frame_to_json(frame):
         ("Alarms", frame[72:80]),
         ("Battery Remaining",
              OrderedDict([
-                 ("value", decode_hex_to_dec(frame[80:84])),
+                 ("value", decode_hex_to_dec(frame[80:82])),
                  ("unit", "days")
              ])
          ),
         ("Operating Time",
          OrderedDict([
-             ("value", decode_hex_to_dec(frame[84:88])),
+             ("value", decode_hex_to_dec(frame[84:86])),
              ("unit", "days")
          ])
          ),
@@ -100,35 +100,35 @@ def frame_to_json(frame):
          ),
         ("BaseIndex",
          OrderedDict([
-             ("value", decode_hex_to_dec(frame[114:122])),
+             ("value", decode_hex_to_dec(frame[114:116])),
              ("unit", "m3"),
              ("storage", 1)
          ])
          ),
         ("CompactProfile",[
          OrderedDict([
-             ("value", decode_hex_to_dec(frame[128:132])),
+             ("value", decode_hex_to_dec(frame[128:130])),
              ("unit", "m3"),
              ("storage", 1),
              ("date", (date + datetime.timedelta(minutes=-15)).strftime(DATE_FORMAT))
 
          ]),
             OrderedDict([
-                ("value", decode_hex_to_dec(frame[132:136])),
+                ("value", decode_hex_to_dec(frame[132:134])),
                 ("unit", "m3"),
                 ("storage", 1),
                 ("date", (date + datetime.timedelta(minutes=-30)).strftime(DATE_FORMAT))
 
             ]),
             OrderedDict([
-                ("value", decode_hex_to_dec(frame[136:140])),
+                ("value", decode_hex_to_dec(frame[136:138])),
                 ("unit", "m3"),
                 ("storage", 1),
                 ("date", (date + datetime.timedelta(minutes=-45)).strftime(DATE_FORMAT))
 
             ]),
             OrderedDict([
-                ("value", decode_hex_to_dec(frame[136:144])),
+                ("value", decode_hex_to_dec(frame[136:138])),
                 ("unit", "m3"),
                 ("storage", 1),
                 ("date", (date + datetime.timedelta(minutes=-60)).strftime(DATE_FORMAT))
