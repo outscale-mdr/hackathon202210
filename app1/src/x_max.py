@@ -1,5 +1,4 @@
-# x_max_v3.py : utilisation de math.max
-import math
+# x_max_v3.py : utilisation de max
 
 # computing a list of max from a key/value input
 # input :
@@ -33,7 +32,7 @@ def max_in_list(s):
 
 
 def get_x_max(path, n):
-    nbmax = math.max(1, int(n))
+    nbmax = max(1, int(n))
 
     flist = open(path, "r")
     s = flist.read()
