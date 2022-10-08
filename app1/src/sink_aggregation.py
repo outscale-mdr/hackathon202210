@@ -96,18 +96,12 @@ def sink_aggregation(json_data):
 
 def find_min(array, key):
     if len(array) > 0:
-        # min = array[0][key]
-        # for i in range(len(array)):
-        #     if array[i][key] != None:
-        #         if array[i][key] < min:
-        #             min = array[i][key]
-        # return min
-        import numpy as np
-
-        array = np.asarray(array)
-        array[array == None] = 10**30
-        array = np.asarray(array, dtype=int)
-        return np.min(array[:, key])
+        min = array[0][key]
+        for i in range(len(array)):
+            if array[i][key] != None:
+                if array[i][key] < min:
+                    min = array[i][key]
+        return min
     return None
 
 
@@ -148,11 +142,6 @@ def detect_anomaly_min(array, key, threshold):
     if len(array) > 0:
         for i in range(len(array)):
             if array[i][key] < threshold:
-                # anomaly_report = {
-                #    "eventTime": None,
-                #    "deviceType": None,
-                #    "rssi": None
-                # }
                 anomaly_report = {}
                 anomaly_report["eventTime"] = array[i]["eventTime"]
                 anomaly_report["deviceType"] = array[i]["deviceType"]
