@@ -51,8 +51,7 @@ class PESPacketInfo:
         return self.AUType
 
 def readFile(fileHandle, startPos, width):
-    if startPos != -1:
-        fileHandle.seek(startPos,0)
+    fileHandle.seek(startPos,0)
     if width == 4:
         string = fileHandle.read(4)
         if len(string) != 4:
@@ -73,15 +72,18 @@ def parseAdaptation_Field(fileHandle, n, PCR):
     flags = 0
     adaptation_field_length = readFile(fileHandle,n,1)
     if adaptation_field_length > 0:
-        flags = readFile(fileHandle,-1,1)
+
+        string = fileHandle.read(1)
+        if len(string) != 1:
+            raise IOError
+        flags = struct.unpack('>B', string[:1])[0]
+
         PCR_flag = (flags>>4)&0x1
         if PCR_flag:
-            time1 = readFile(fileHandle,-1,1)
-            time2 = readFile(fileHandle,-1,1)
-            time3 = readFile(fileHandle,-1,1)
-            time4 = readFile(fileHandle,-1,1)
-            time5 = readFile(fileHandle,-1,1)
-            time6 = readFile(fileHandle,-1,1)
+            string = file_handle.read(6)
+            if len(string) != 6:  # check like in the function
+                raise IOError
+            time1, time2, time3, time4, time5, time6 = struct.unpack('>6B', string)
 
             PCR_val  = time1 << 25
             PCR_val |= time2 << 17
@@ -98,10 +100,11 @@ def parseAdaptation_Field(fileHandle, n, PCR):
 
 def getPTS(fileHandle, n):
     time1 = readFile(fileHandle,n,1)
-    time2 = readFile(fileHandle,n+1,1)
-    time3 = readFile(fileHandle,n+2,1)
-    time4 = readFile(fileHandle,n+3,1)
-    time5 = readFile(fileHandle,n+4,1)
+
+    string = file_handle.read(4)
+    if len(string) != 4:  # check like in the function
+        raise IOError
+    time2, time3, time4, time5 = struct.unpack('>4B', string)
 
     PTS   = (time1 & 0x0E) >> 1
     PTS <<= 8
