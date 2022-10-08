@@ -105,16 +105,16 @@ def getPTS(fileHandle, n):
 def parseIndividualPESPayload(fileHandle, n):
     local = readFile(fileHandle,n,4)
     k = 0
-    while((local&0xFFFFFF00) != 0x00000100):
+    while (local&0xFFFFFF00) != 0x00000100:
         k += 1;
-        if (k > 100):
+        if k > 100:
             return "Unknown AU type"
         local = readFile(fileHandle,n+k,4)
 
-    if(((local&0xFFFFFF00) == 0x00000100)&(local&0x1F == 0x9)):
+    if (((local&0xFFFFFF00) == 0x00000100)&(local&0x1F == 0x9)):
         primary_pic_type = readFile(fileHandle,n+k+4,1)
         primary_pic_type = (primary_pic_type&0xE0)>>5
-        if (primary_pic_type == 0x0):
+        if primary_pic_type == 0x0:
             return "IDR_picture"
         else:
             return "non_IDR_picture"
@@ -160,7 +160,7 @@ def parsePATSection(fileHandle, k):
 
     local = readFile(fileHandle,k,4)
     table_id = (local>>24)
-    if (table_id != 0x0):
+    if table_id != 0x0:
         return
 
 
@@ -180,7 +180,7 @@ def parsePATSection(fileHandle, k):
     length = section_length - 4 - 5
     j = k + 8
 
-    while (length > 0):
+    while length > 0:
         local = readFile(fileHandle, j, 4)
         program_number = (local >> 16)
         program_map_PID = local & 0x1FFF
@@ -195,8 +195,7 @@ def parsePMTSection(fileHandle, k):
     local = readFile(fileHandle,k,4)
 
     table_id = (local>>24)
-    if (table_id != 0x2):
-
+    if table_id != 0x2:
         return
 
 
@@ -225,8 +224,8 @@ def parsePMTSection(fileHandle, k):
 
 
     n = program_info_length
-    m = k + 12;
-    while (n>0):
+    m = k + 12
+    while n>0:
         descriptor_tag = readFile(fileHandle, m, 1)
         descriptor_length = readFile(fileHandle, m+1, 1)
 
@@ -236,7 +235,7 @@ def parsePMTSection(fileHandle, k):
     j = k + 12 + program_info_length
     length = section_length - 4 - 9 - program_info_length
 
-    while (length > 0):
+    while length > 0:
         local1 = readFile(fileHandle, j, 1)
         local2 = readFile(fileHandle, j+1, 4)
 
@@ -246,8 +245,8 @@ def parsePMTSection(fileHandle, k):
 
 
         n = ES_info_length
-        m = j+5;
-        while (n>0):
+        m = j+5
+        while n>0:
             descriptor_tag = readFile(fileHandle, m, 1)
             descriptor_length = readFile(fileHandle, m+1, 1)
 
@@ -263,8 +262,7 @@ def parseSITSection(fileHandle, k):
     local = readFile(fileHandle,k,4)
 
     table_id = (local>>24)
-    if (table_id != 0x7F):
-
+    if table_id != 0x7F:
         return
 
 
@@ -280,8 +278,8 @@ def parseSITSection(fileHandle, k):
     transmission_info_loop_length = local&0xFFF
 
     n = transmission_info_loop_length
-    m = k + 10;
-    while (n>0):
+    m = k + 10
+    while n>0:
         descriptor_tag = readFile(fileHandle, m, 1)
         descriptor_length = readFile(fileHandle, m+1, 1)
 
@@ -291,15 +289,15 @@ def parseSITSection(fileHandle, k):
     j = k + 10 + transmission_info_loop_length
     length = section_length - 4 - 7 - transmission_info_loop_length
 
-    while (length > 0):
+    while length > 0:
         local1 = readFile(fileHandle, j, 4)
         service_id = (local1>>16)&0xFFFF;
         service_loop_length = local1&0xFFF
 
 
         n = service_loop_length
-        m = j+4;
-        while (n>0):
+        m = j+4
+        while n>0:
             descriptor_tag = readFile(fileHandle, m, 1)
             descriptor_length = readFile(fileHandle, m+1, 1)
 
@@ -315,11 +313,11 @@ def getDeltaPcrPts(pid, pcr, pts):
     pcrIdx = 0
 
     for packet in pts:
-        if (packet['pid'] != pid):
+        if packet['pid'] != pid:
             continue
-        while ((pcr[pcrIdx]['packet'] < packet['packet']) & (pcrIdx < len(pcr) - 1)):
+        while (pcr[pcrIdx]['packet'] < packet['packet']) & (pcrIdx < len(pcr) - 1):
             pcrIdx += 1
-        if (pcr[pcrIdx]['packet'] < packet['packet']):
+        if pcr[pcrIdx]['packet'] < packet['packet']:
             break
         listDelta.append (packet['pts'] / 90 - pcr[pcrIdx]['pcr'] / 27000)
     return listDelta
@@ -331,9 +329,9 @@ def getDeltaStats (listDelta):
 
     for delta in listDelta:
         total += delta
-        if (delta < minVal):
+        if delta < minVal:
             minVal = delta
-        if (delta > maxVal):
+        if delta > maxVal:
             maxVal = delta
     return { 'min': int(minVal), 'max': int(maxVal), 'average':int(total/len(listDelta))}
 
@@ -341,10 +339,10 @@ def getTrackStat (pid, count, pts):
     firstPacket = 0
     lastPacket = len(pts)-1
 
-    while (pts[firstPacket]['pid'] != pid):
+    while pts[firstPacket]['pid'] != pid:
         firstPacket += 1
 
-    while (pts[lastPacket]['pid'] != pid):
+    while pts[lastPacket]['pid'] != pid:
         lastPacket -= 1
 
     duration = pts[lastPacket]['pts'] / 90 - pts[firstPacket]['pts'] / 90
@@ -396,9 +394,9 @@ def parsePcrPts(fileHandle):
             if (adaptation_fieldc_trl == 0x2)|(adaptation_fieldc_trl == 0x3):
                 [Adaptation_Field_Length, flags] = parseAdaptation_Field(fileHandle,n+4,PCR)
 
-                if (((flags>>4)&0x1)):
+                if (flags >> 4)&0x1:
                     discontinuity = False
-                    if (((flags>>7)&0x1)):
+                    if (flags >> 7)&0x1:
                         discontinuity = True
 
                     logging.debug ('PCR packet, packet No. %d, PID = 0x%x, PCR = 0x%X discontinuity = %s' \
@@ -409,9 +407,9 @@ def parsePcrPts(fileHandle):
 
                 PESstartCode = readFile(fileHandle,n+Adaptation_Field_Length+4,4)
 
-                if ((PESstartCode&0xFFFFFF00) == 0x00000100):
+                if (PESstartCode & 0xFFFFFF00) == 0x00000100:
 
-                    if (payload_unit_start_indicator == 1):
+                    if payload_unit_start_indicator == 1:
                         parsePESHeader(fileHandle, n+Adaptation_Field_Length+4, PESPktInfo)
                         logging.debug ('PES start, packet No. %d, PID = 0x%x, PTS = 0x%X' \
                         %(packetCount, PID, PESPktInfo.PTS))
@@ -419,7 +417,7 @@ def parsePcrPts(fileHandle):
 
                     pidFound = False
                     for index in PESPidList:
-                        if (index['pid'] == PID):
+                        if index['pid'] == PID:
                             pidFound = True
                             break
 
@@ -437,21 +435,21 @@ def parsePcrPts(fileHandle):
 
                     k = n+Adaptation_Field_Length+4+1+pointer_field
 
-                    if (table_id == 0x0):
+                    if table_id == 0x0:
                         logging.debug ('pasing PAT Packet! packet No. %d, PID = 0x%X' %(packetCount, PID))
                         parsePATSection(fileHandle, k)
 
-                    elif (table_id == 0x2):
+                    elif table_id == 0x2:
                         logging.debug ('pasing PMT Packet! packet No. %d, PID = 0x%X' %(packetCount, PID))
                         parsePMTSection(fileHandle, k)
 
-                    elif (table_id == 0x7F):
+                    elif table_id == 0x7F:
                         logging.debug ('pasing SIT Packet! packet No. %d, PID = 0x%X' %(packetCount, PID))
                         parseSITSection(fileHandle, k)
 
             n += packet_size
             for index in PESPidList:
-                if (index['pid'] == PID):
+                if index['pid'] == PID:
                     index['count'] += 1
                     break
 
