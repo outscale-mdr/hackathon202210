@@ -35,7 +35,7 @@ def main():
 
         # If no file is present we wait for 5 seconds and look again
         if not files: 
-            time.sleep(5)
+            time.sleep(50)
             continue
 
         # We process the first file
