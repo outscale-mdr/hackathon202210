@@ -35,13 +35,13 @@ def decode_hex_to_dec(hexa_string):
 
 def decode_date(hexa_string):
     # minutes
-    minute = int(str("{0:08b}".format(int(hexa_string[0:2], 16)))[2:8], 2)
+    minute = int(hexa_string[0:2], 16)%64
     # hour
-    hour = int(str("{0:08b}".format(int(hexa_string[2:4], 16)))[3:8], 2)
+    hour = int(hexa_string[2:4], 16)%32
     # day
-    day = int(str("{0:08b}".format(int(hexa_string[4:6], 16)))[3:8], 2)
+    day = int(hexa_string[4:6], 16)%32
     # month
-    month = int(str("{0:08b}".format(int(hexa_string[6:8], 16)))[4:8], 2)
+    month = int(hexa_string[6:8], 16)%16
     # year
     year_thousand = 1900 + 100 * int(str("{0:08b}".format(int(hexa_string[2:4], 16)))[1:3], 2)
     year_cut = int(str("{0:08b}".format(int(hexa_string[6:8], 16)))[0:4] + str("{0:08b}".format(int(hexa_string[4:6], 16)))[0:3],2)
