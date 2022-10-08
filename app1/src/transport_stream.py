@@ -402,7 +402,7 @@ def parsePcrPts(fileHandle):
     PCRList = []
 
     try:
-        while(True):
+        while True)=:
 
             PacketHeader = readFile(fileHandle,n,4)
 
@@ -498,4 +498,4 @@ def parse_transport_stream(filename):
     logging.info (stats)
     return stats
 
-
+parse_transport_stream("../../media/test_arte.ts")
