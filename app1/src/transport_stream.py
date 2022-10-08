@@ -343,7 +343,7 @@ def getPidStats (pidList, pcr, pts):
 
     for pid in pidList:
         deltaPid = getDeltaPcrPts(pid['pid'], pcr, pts)
-        deltaStats = {'min': min(deltaPid), 'max': max(deltaPid), 'average': sum(deltaPid) / len(deltaPid)}
+        deltaStats = {'min': int(min(deltaPid)), 'max': int(max(deltaPid)), 'average': int(sum(deltaPid) / len(deltaPid))}
         stat = getTrackStat (pid['pid'], pid['count'], pts)
 
         stats.append ({'pid': pid['pid'], 'deltaPcrPts': deltaStats, 'duration': stat['duration'], 'size': stat['size'], 'bandwidth': stat['bandwidth'] })
