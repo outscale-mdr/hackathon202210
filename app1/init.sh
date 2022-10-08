@@ -58,6 +58,8 @@ sudo apt-get -y install python3
 sudo apt-get -y install python3-pip
 sudo apt-get -y install python3-pymongo
 
+sudo python3 -m pip install pyprimesieve
+
 # Install application
 mkdir /data/code
 mkdir /data/input
