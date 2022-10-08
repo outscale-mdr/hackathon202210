@@ -56,10 +56,22 @@ jobs:
       if: github.event_name == 'pull_request'
       run : |
         cd metrics
-        ./start.sh "$GITHUB_HEAD_REF"
+        ./start.sh "$GITHUB_HEAD_REF" | tee one.txt
+        ./start.sh "$GITHUB_HEAD_REF" | tee two.txt
+        ./start.sh "$GITHUB_HEAD_REF" | tee three.txt
+        one=$(grep "TOTAL" one.txt | awk '{ print $2 }' | awk -F '(' '{ print $1 }')
+        two=$(grep "TOTAL" two.txt | awk '{ print $2 }' | awk -F '(' '{ print $1 }')
+        three=$(grep "TOTAL" three.txt | awk '{ print $2 }' | awk -F '(' '{ print $1 }')
+        python3 -c "from statistics import mean; print('AVG: {}'.format(mean([$one,$two,$three])))"
 
     - name: Run metrics main
       if: github.event_name == 'push'
       run : |
         cd metrics
-        ./start.sh
+        ./start.sh  | tee one.txt
+        ./start.sh  | tee two.txt
+        ./start.sh  | tee three.txt
+        one=$(grep "TOTAL" one.txt | awk '{ print $2 }' | awk -F '(' '{ print $1 }')
+        two=$(grep "TOTAL" two.txt | awk '{ print $2 }' | awk -F '(' '{ print $1 }')
+        three=$(grep "TOTAL" three.txt | awk '{ print $2 }' | awk -F '(' '{ print $1 }')
+        python3 -c "from statistics import mean; print('AVG: {}'.format(mean([$one,$two,$three])))"
