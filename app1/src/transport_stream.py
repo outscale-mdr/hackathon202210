@@ -21,7 +21,7 @@ is basic, here some elements:
 
 import sys
 import struct
-import logging
+
 from optparse import OptionParser
 
 class SystemClock:
@@ -387,8 +387,7 @@ def parsePcrPts(fileHandle):
                     if (flags >> 7)&0x1:
                         discontinuity = True
 
-                    logging.debug ('PCR packet, packet No. %d, PID = 0x%x, PCR = 0x%X discontinuity = %s' \
-                            %(packetCount, PID, PCR.PCR, discontinuity))
+
                     PCRList.append ({'packet':packetCount,'pid':PID, 'pcr':PCR.PCR, 'discontinuity':discontinuity})
 
             if (adaptation_fieldc_trl == 0x1)|(adaptation_fieldc_trl == 0x3):
@@ -399,8 +398,7 @@ def parsePcrPts(fileHandle):
 
                     if payload_unit_start_indicator == 1:
                         parsePESHeader(fileHandle, n+Adaptation_Field_Length+4, PESPktInfo)
-                        logging.debug ('PES start, packet No. %d, PID = 0x%x, PTS = 0x%X' \
-                        %(packetCount, PID, PESPktInfo.PTS))
+
                         PTSList.append ({'packet':packetCount,'pid':PID, 'pts':PESPktInfo.PTS})
 
                     pidFound = False
@@ -418,22 +416,13 @@ def parsePcrPts(fileHandle):
                     pointer_field = (PESstartCode >> 24)
                     table_id = readFile(fileHandle,n+Adaptation_Field_Length+4+1+pointer_field,1)
 
-                    if ((table_id == 0x0)&(PID != 0x0)):
-                        logging.warning ('Ooops!, Something wrong in packet No. %d' %packetCount)
+
 
                     k = n+Adaptation_Field_Length+4+1+pointer_field
 
-                    if table_id == 0x0:
-                        logging.debug ('pasing PAT Packet! packet No. %d, PID = 0x%X' %(packetCount, PID))
-                        parsePATSection(fileHandle, k)
 
-                    elif table_id == 0x2:
-                        logging.debug ('pasing PMT Packet! packet No. %d, PID = 0x%X' %(packetCount, PID))
-                        parsePMTSection(fileHandle, k)
 
-                    elif table_id == 0x7F:
-                        logging.debug ('pasing SIT Packet! packet No. %d, PID = 0x%X' %(packetCount, PID))
-                        parseSITSection(fileHandle, k)
+
 
             n += packet_size
             for index in PESPidList:
@@ -444,7 +433,7 @@ def parsePcrPts(fileHandle):
             packetCount += 1
 
     except IOError:
-        logging.info ('IO error! maybe reached EOF')
+
         return [PESPidList, PCRList, PTSList]
     else:
         fileHandle.close()
@@ -456,7 +445,7 @@ def parse_transport_stream(filename):
 
     [pesPidList, pcr, pts] = parsePcrPts(fileHandle)
     stats = getPidStats(pesPidList, pcr, pts)
-    logging.info (stats)
+
     return stats
 
 
