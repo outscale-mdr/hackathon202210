@@ -10,10 +10,7 @@ on:
     
 jobs:
   Build:
-    concurrency: 
-      group: build
-      cancel-in-progress: false
-    runs-on: ubuntu-20.04
+    runs-on: [self-hosted, linux]
     steps:
     ## Check out code
     - uses: actions/checkout@v2
