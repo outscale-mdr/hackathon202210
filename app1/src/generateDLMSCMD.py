@@ -2,6 +2,7 @@
 import os
 import re
 import _md5
+import hashlib
 
 """
  In this case you need to produce n files from a template, liste of id and two dates.
@@ -13,14 +14,6 @@ dt_start : a date in format YYYY-MM-DDTHH:MM:SS
 dt_stop : a date in format YYYY-MM-DDTHH:MM:SS
 return the list of md5 for each xml string generated in list format 
 """
-
-def compute_md5(file_name):
-    hash_md5 = _md5.md5()
-    with open(file_name, "rb") as f:
-        for chunk in iter(lambda: f.read(4096), b""):
-            hash_md5.update(chunk)
-    return hash_md5.hexdigest()
-
 
 def templating_dlms(filename_id, dt_start, dt_stop):
      file = open(os.path.join("/data/media/", filename_id), "r")
@@ -45,13 +38,9 @@ def templating_dlms(filename_id, dt_start, dt_stop):
           s = re.sub('<stop>([^<])+</stop>', '<stop>' + dend + '</stop>', s, 1)
 
 
-          #md5_hash = hashlib.md5()
-          #Aparamment, hashlib trois fois plus lent que md_5
 
-          md5_hash = compute_md5(filename_id)
-
-          #md5_hash = _md5.md5()
-          #md5_hash.update(s.encode("UTF-8"))
+          md5_hash = hashlib.md5()
+          md5_hash.update(s.encode("UTF-8"))
 
           md5s.append(md5_hash.hexdigest())
 
