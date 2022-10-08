@@ -1,4 +1,4 @@
-import math
+from math import factorial
 """ 
 #### factorial function example ### 
  fact n 
@@ -13,7 +13,7 @@ def factorielle(a):
         return 'undefined'
     if a < 2:
         return 1
-    return math.factorial(a)
+    return factorial(a)
 
 def cmd_fact(n):
     return str(factorielle(n))
