@@ -29,9 +29,7 @@ def max_in_list(s):
 
 
 def get_x_max(path, n):
-    nbmax = int(n)
-    if nbmax < 1:
-        nbmax = 1
+    nbmax = max(int(n), 1)
 
     flist = open(path, "r")
     s = flist.read()
