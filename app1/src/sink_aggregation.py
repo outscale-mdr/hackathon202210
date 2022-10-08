@@ -142,7 +142,12 @@ def detect_anomaly_min(array, key, threshold):
     if len(array) > 0:
         for i in range(len(array)):
             if array[i][key] < threshold:
-                anomaly_report = {}
+                anomaly_report = {
+                    "eventTime": None,
+                    "deviceType": None,
+                    "connection": None,
+                    "rssi": None,
+                }
                 anomaly_report["eventTime"] = array[i]["eventTime"]
                 anomaly_report["deviceType"] = array[i]["deviceType"]
                 anomaly_report["connection"] = array[i]["connection"]
