@@ -80,7 +80,7 @@ def parseAdaptation_Field(fileHandle, n, PCR):
 
         PCR_flag = (flags>>4)&0x1
         if PCR_flag:
-            string = file_handle.read(6)
+            string = fileHandle.read(6)
             if len(string) != 6:  # check like in the function
                 raise IOError
             time1, time2, time3, time4, time5, time6 = struct.unpack('>6B', string)
@@ -101,7 +101,7 @@ def parseAdaptation_Field(fileHandle, n, PCR):
 def getPTS(fileHandle, n):
     time1 = readFile(fileHandle,n,1)
 
-    string = file_handle.read(4)
+    string = fileHandle.read(4)
     if len(string) != 4:  # check like in the function
         raise IOError
     time2, time3, time4, time5 = struct.unpack('>4B', string)
@@ -496,3 +496,5 @@ def parse_transport_stream(filename):
     stats = getPidStats(pesPidList, pcr, pts)
     logging.info (stats)
     return stats
+
+parse_transport_stream("../../media/test_arte.ts")
