@@ -25,7 +25,7 @@ def to_unsigned(hexa_string, n):
 
 
 def decode_hex_to_dec(hexa_string):
-    n = int(hexa_string[:2], 16)%256
+    n = int(hexa_string[:2], 16)
     if n<128:
         return n
     else:
