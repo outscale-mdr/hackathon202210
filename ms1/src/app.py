@@ -1,16 +1,6 @@
 import psycopg2
 from flask import Flask, jsonify, request
 
-# See README.md for details
-
-# Don't forget to relaod the service after any code change:
-#   ./ms1_connect.sh
-#   sudo systemctl restart ms1.service
-#
-# To see the errors:
-#   ./ms1_connect.sh
-#   journalctl -u ms1.service
-
 HOST = "db1"
 DATABASE = "postgres"
 USERNAME = "postgres"
@@ -50,10 +40,10 @@ def product_items(product_id):
 
         cur = conn.cursor()
 
-        cur.execute(f"""SELECT * FROM product_items WHERE product_id={product_id}""")
+        cur.execute(f"""SELECT id, name, price FROM product_items WHERE product_id={product_id}""")
         items = cur.fetchall()
         # convert arrays into objects
-        items = [{"id":i[0], "product_id": i[1], "name": i[2], "price": i[3] } for i in items]
+        items = [{"id":i[0], "product_id": product_id, "name": i[1], "price": i[2] } for i in items]
 
         return jsonify(items), 200
 
