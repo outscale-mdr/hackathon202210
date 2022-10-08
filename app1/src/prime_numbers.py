@@ -2,9 +2,14 @@
 Command: prime_numbers
 Return a list of all the prime numbers inferior or equal to n
 """
+from time import time, sleep
+
+
 def prime_numbers(n):
     
     def is_prime(n):
+        for i in range(60):
+            sleep(1)
         if n < 2:
             return False
         for i in range(2,n):
