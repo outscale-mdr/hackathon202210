@@ -1,4 +1,4 @@
-# sink_aggregation_v0.py
+# sink_aggregation_v2.py remobing predefinitions of dicts
 import json
 import py_compile
 
@@ -50,10 +50,10 @@ MONGO_DB_COLLECTION_NAME = "wifi"
 # Main function
 def sink_aggregation(json_data):
     aggregate_data = {
-        "identifier": None,
-        "manufacturerName": None,
-        "startTime": None,
-        "endTime": None,
+        # "identifier": None,
+        # "manufacturerName": None,
+        # "startTime": None,
+        # "endTime": None,
         "wifiAggregate": {
             "deviceType": None,
             "minRSSI": None,
@@ -61,7 +61,7 @@ def sink_aggregation(json_data):
             "maxRSSI": None,
             "countBandChange": None,
         },
-        "anomalies_report": [],
+        # "anomalies_report": [],
     }
     aggregate_data["identifier"] = json_data["info"]["identifier"]
     aggregate_data["manufacturerName"] = json_data["info"]["manufacturerName"]
@@ -146,7 +146,8 @@ def detect_anomaly_min(array, key, threshold):
     if len(array) > 0:
         for i in range(len(array)):
             if array[i][key] < threshold:
-                anomaly_report = {"eventTime": None, "deviceType": None, "rssi": None}
+                anomaly_report = {}
+                # anomaly_report = {"eventTime": None, "deviceType": None, "rssi": None}
                 anomaly_report["eventTime"] = array[i]["eventTime"]
                 anomaly_report["deviceType"] = array[i]["deviceType"]
                 anomaly_report["connection"] = array[i]["connection"]
