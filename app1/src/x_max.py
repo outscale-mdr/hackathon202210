@@ -29,14 +29,16 @@ def max_in_list(s):
 
 
 def get_x_max(path, n):
-    nbmax = max(int(n), 1)
+    nbmax = int(n)
+    if nbmax < 1:
+        nbmax = 1
 
     flist = open(path, "r")
     s = flist.read()
     keys = []
     while len(keys) < nbmax:
-        max = max_in_list(s)
-        keys.append(max.split(",")[0])
-        s = s.replace("(" + str(max) + ");", "").replace(";(" + str(max) + ")", "")
+        maxi = max_in_list(s)
+        keys.append(maxi.split(",")[0])
+        s = s.replace("(" + str(maxi) + ");", "").replace(";(" + str(maxi) + ")", "")
 
     return str(keys)
