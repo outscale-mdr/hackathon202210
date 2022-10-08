@@ -1,0 +1,61 @@
+name: Build
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    
+jobs:
+  Build:
+    concurrency: 
+      group: build
+      cancel-in-progress: false
+    runs-on: ubuntu-20.04
+    steps:
+    ## Check out code
+    - uses: actions/checkout@v2
+  
+    - name: Copy private key
+      run: |
+        echo "${PRIVATE_KEY}" > ./hackathon.rsa
+        chmod 600 ./hackathon.rsa
+      env:
+        PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+
+
+    - name: Sync code app1
+      run: | 
+        scp -o StrictHostKeyChecking=no -i ./hackathon.rsa app1/src/* outscale@${APP1_IP}:/data/code
+        ssh -o StrictHostKeyChecking=no -i ./hackathon.rsa outscale@${APP1_IP} sudo systemctl restart app1.service
+        echo "ssh -o StrictHostKeyChecking=no -i ./hackathon.rsa outscale@${APP1_IP}" > ./app1_connect.sh
+        chmod +x ./app1_connect.sh
+      env:
+        APP1_IP: ${{ secrets.APP1_IP }}
+    
+    - name: Sync code db1
+      run: | 
+        echo "ssh -o StrictHostKeyChecking=no -i ./hackathon.rsa outscale@${DB1_IP}" > ./db1_connect.sh
+        chmod +x ./db1_connect.sh
+      env:
+        DB1_IP: ${{ secrets.DB1_IP }}
+
+    - name: Sync code ms1
+      run: | 
+        scp -o StrictHostKeyChecking=no -i ./hackathon.rsa ms1/src/* outscale@${MS1_IP}:
+        ssh -o StrictHostKeyChecking=no -i ./hackathon.rsa outscale@${MS1_IP} sudo systemctl restart ms1.service
+        echo "ssh -o StrictHostKeyChecking=no -i ./hackathon.rsa outscale@${MS1_IP}" > ./ms1_connect.sh
+        chmod +x ./ms1_connect.sh
+      env:
+        MS1_IP: ${{ secrets.MS1_IP }}
+
+    - name: Replace ssh_key_path
+      run: |
+        sed -i "s%~/.ssh/hackathon.rsa%../hackathon.rsa%g" metrics/start.sh
+    
+    - name: Run metrics
+      run : |
+        cd metrics
+        ./start.sh
