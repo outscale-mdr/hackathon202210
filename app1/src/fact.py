@@ -1,4 +1,5 @@
-import sys
+import math
+
 """ 
 #### factorial function example ### 
  fact n 
@@ -9,11 +10,7 @@ import sys
 """
 
 def factorielle(a):
-    if a < 0:
-        return 'undefined'
-    if a < 2:
-        return 1
-    return a*factorielle(a-1)
+    return math.factorial(a)
 
 def cmd_fact(n):
-    return str(factorielle(n))
+    return str(math.factorial(n))
