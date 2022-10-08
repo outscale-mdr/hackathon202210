@@ -407,7 +407,7 @@ def parsePcrPts(fileHandle):
             PacketHeader = readFile(fileHandle,n,4)
 
             syncByte = (PacketHeader>>24)
-            if (syncByte != 0x47):
+            if syncByte != 0x47:
                 logging.error ('Ooops! Can NOT found Sync_Byte! maybe something wrong with the file')
                 break
 
