@@ -1,4 +1,5 @@
-# x_max_v4.py : suppression de la première fonction
+# x_max_v5.py : version 3 à laquelle on enlève les str de la ligne 43
+
 # computing a list of max from a key/value input
 # input :
 #     * a filename to a file with the list of couple of letter(key) and an integer (value) as (a,3) separate by ';' # output
@@ -16,6 +17,20 @@
 # run is the function called by the test runner
 
 
+def max_in_list(s):
+    pairs = s.replace("(", "").replace(")", "").split(";")
+    m = -1
+    key = "NONE"
+    for pair in pairs:
+        kv = pair.split(",")
+        i = int(kv[1])
+        if m < i:
+            m = i
+            key = kv[0]
+
+    return key + "," + str(m)
+
+
 def get_x_max(path, n):
     nbmax = max(1, int(n))
 
@@ -23,18 +38,8 @@ def get_x_max(path, n):
     s = flist.read()
     keys = []
     while len(keys) < nbmax:
-        pairs = s.replace("(", "").replace(")", "").split(";")
-        m = -1
-        key = "NONE"
-        for pair in pairs:
-            kv = pair.split(",")
-            i = int(kv[1])
-            if m < i:
-                m = i
-                key = kv[0]
-
-        maxi = key + "," + str(m)
+        maxi = max_in_list(s)
         keys.append(maxi.split(",")[0])
-        s = s.replace("(" + str(maxi) + ");", "").replace(";(" + str(maxi) + ")", "")
+        s = s.replace("(" + maxi + ");", "").replace(";(" + maxi + ")", "")
 
     return str(keys)
