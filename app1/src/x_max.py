@@ -1,3 +1,4 @@
+# x_max_v0.py
 # computing a list of max from a key/value input
 # input :
 #     * a filename to a file with the list of couple of letter(key) and an integer (value) as (a,3) separate by ';' # output
@@ -15,16 +16,22 @@
 # run is the function called by the test runner
 
 
+import py_compile
+
+
 def max_in_list(s):
     pairs = s.replace("(", "").replace(")", "").split(";")
     m = -1
     key = "NONE"
+    d = {}
     for pair in pairs:
         kv = pair.split(",")
         i = int(kv[1])
+        d[kv[0]] = i
         if m < i:
             m = i
             key = kv[0]
+
     return key + "," + str(m)
 
 
