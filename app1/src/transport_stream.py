@@ -488,5 +488,3 @@ def parse_transport_stream(filename):
     stats = getPidStats(pesPidList, pcr, pts)
     logging.info (stats)
     return stats
-
-print(parse_transport_stream("../../media/test_arte.ts"))
