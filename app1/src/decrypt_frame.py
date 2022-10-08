@@ -4,11 +4,14 @@ import datetime
 
 """
 In this case, it's a classic frame decoding problem
+
 inputs : 
 frame : a frame in hexa with type string
+
 output:  
 json decoded with no blank type string
 or the error message
+
 """
 
 
@@ -16,34 +19,26 @@ DATE_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 FOS_LIST = ["CC29","23FE"]
 
 
-def to_unsigned(hexa_string, n):
-    l = len(hexa_string)
-    cmplt = int("F"*l,16)
-    cmplt2 = int("8" + "0" * (l - 1), 16)
-    n = n & cmplt
-    return n | (-(n & cmplt2))
-
 
 def decode_hex_to_dec(hexa_string):
-    len_string = len(hexa_string)
-    reversed_hexa_string = ""
-    for i in range(len_string, 0, -2):
-        reversed_hexa_string += hexa_string[i-2:i]
-
-    return to_unsigned(hexa_string, int(reversed_hexa_string, 16))
+    n = int(hexa_string[:2], 16)
+    if n<128:
+        return n
+    else:
+        return n-256
 
 
 def decode_date(hexa_string):
     # minutes
-    minute = int(str("{0:08b}".format(int(hexa_string[0:2], 16)))[2:8], 2)
+    minute = int(hexa_string[0:2], 16)%64
     # hour
-    hour = int(str("{0:08b}".format(int(hexa_string[2:4], 16)))[3:8], 2)
+    hour = int(hexa_string[2:4], 16)%32
     # day
-    day = int(str("{0:08b}".format(int(hexa_string[4:6], 16)))[3:8], 2)
+    day = int(hexa_string[4:6], 16)%32
     # month
-    month = int(str("{0:08b}".format(int(hexa_string[6:8], 16)))[4:8], 2)
+    month = int(hexa_string[6:8], 16)%16
     # year
-    year_thousand = 1900 + 100 * int(str("{0:08b}".format(int(hexa_string[2:4], 16)))[1:3], 2)
+    year_thousand = 1900 + 100 * ((int(hexa_string[2:4], 16)%128)//32)
     year_cut = int(str("{0:08b}".format(int(hexa_string[6:8], 16)))[0:4] + str("{0:08b}".format(int(hexa_string[4:6], 16)))[0:3],2)
     year = year_thousand + year_cut
 
@@ -142,14 +137,14 @@ def frame_to_json(frame):
 
 
 def decode_frame(frame):
-    str=""
+    s = ""
     if len(frame) != 144:
-        str="Invalid frame"
+        s = "Invalid frame"
     elif frame[0:2] != "79":
-        str="Frame doesn't start with 79"
+        s = "Frame doesn't start with 79"
     elif frame[2:6] not in FOS_LIST:
-        str="Invalid FOS"
+        s = "Invalid FOS"
     else:
         frame_dict = frame_to_json(frame)
-        str=json.dumps(frame_dict, indent=4)
-    return str
+        s = json.dumps(frame_dict, indent=4)
+    return s
