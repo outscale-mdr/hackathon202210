@@ -98,6 +98,34 @@ def clone_items(product_id, new_product_id, coef):
         if conn:
             conn.close()
 
+
+@app.route('/sum/<product_id>')
+def sum_items(product_id):
+    conn = None
+    cur = None
+    try:
+        conn = psycopg2.connect(
+            host=HOST,
+            database=DATABASE,
+            user=USERNAME,
+            password=PASSWORD)
+
+        cur = conn.cursor()
+
+        cur.execute(f"""SELECT SUM(price) FROM product_items WHERE product_id={product_id}""")
+        items = cur.one()[0]
+
+        return str(items), 200
+
+    except Exception as e:
+        return jsonify(e.messages), 400
+
+    finally:
+        if cur:
+            cur.close()
+        if conn:
+            conn.close()
+
 """
 Add new item into "product_items" table.
 Request paramaters:

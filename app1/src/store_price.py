@@ -10,10 +10,10 @@ def clone_product(product_id, new_product_id, coef):
 Find the sum of items prices of a product
 """
 def sum_of_prices(product_id):
-    LIST_PRODUCT_URL = "http://ms1:8000/product_items"
-    items = requests.get(url = f"{LIST_PRODUCT_URL}/{product_id}").json()
+    LIST_PRODUCT_URL = "http://ms1:8000/sum"
+    items = requests.get(url = f"{LIST_PRODUCT_URL}/{product_id}").text
     
-    return round(sum([i['price'] for i in items]))
+    return int(items)
 
 
 """
