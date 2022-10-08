@@ -46,18 +46,18 @@ MONGO_DB_COLLECTION_NAME = "wifi"
 # Main function
 def sink_aggregation(json_data):
     aggregate_data = {
-        # "identifier": None,
-        # "manufacturerName": None,
-        # "startTime": None,
-        # "endTime": None,
+        "identifier": None,
+        "manufacturerName": None,
+        "startTime": None,
+        "endTime": None,
         "wifiAggregate": {
             "deviceType": None,
             "minRSSI": None,
             "avgRSSI": None,
             "maxRSSI": None,
             "countBandChange": None,
-        }  # ,
-        # "anomalies_report" : []
+        },
+        "anomalies_report": [],
     }
     aggregate_data["identifier"] = json_data["info"]["identifier"]
     aggregate_data["manufacturerName"] = json_data["info"]["manufacturerName"]
@@ -163,11 +163,11 @@ def insert_data_mongo(mongo_server: MongoClient, json_insert):
 
 
 def find_data_mongo(mongo_server: MongoClient, identifier: str):
-    result = {}
     try:
         result = mongo_server[MONGO_DB_DATABASE_NAME][
             MONGO_DB_COLLECTION_NAME
         ].find_one({"identifier": identifier}, {"_id": 0})
     except:
+        result = {}
         print("Cannot find data into MongoDB")
     return result
