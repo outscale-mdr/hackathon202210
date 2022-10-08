@@ -39,7 +39,7 @@ def templating_dlms(filename_id, dt_start, dt_stop):
 
 
 
-          md5_hash = hashlib.md5()
+          md5_hash = _md5.md5()
           md5_hash.update(s.encode("UTF-8"))
 
           md5s.append(md5_hash.hexdigest())
