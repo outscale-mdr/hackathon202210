@@ -29,12 +29,10 @@ def to_unsigned(hexa_string, n):
 
 def decode_hex_to_dec(hexa_string):
     n = int(hexa_string[:2], 16)
-
-    a = n%256
-    if a<128:
-        return a
+    if n<128:
+        return n
     else:
-        return a-256
+        return n-256
 
 
 def decode_date(hexa_string):
