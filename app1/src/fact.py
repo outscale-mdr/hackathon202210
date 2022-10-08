@@ -1,5 +1,4 @@
 import math
-
 """ 
 #### factorial function example ### 
  fact n 
