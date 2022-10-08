@@ -85,10 +85,10 @@ def parseAdaptation_Field(fileHandle, n, PCR):
                 raise IOError
             time1, time2, time3, time4, time5, time6 = struct.unpack('>6B', string)
 
-            PCR_val  = time1 << 25
-            PCR_val |= time2 << 17
-            PCR_val |= time3 << 9
-            PCR_val |= time4 << 1
+            PCR_val  = time1 * 0x2000000
+            PCR_val |= time2 * 0x20000
+            PCR_val |= time3 * 0x200
+            PCR_val |= time4 * 2
             PCR_val |= (time5 & 0x80) >> 7
 
             PCR_val *= 300
@@ -496,3 +496,5 @@ def parse_transport_stream(filename):
     stats = getPidStats(pesPidList, pcr, pts)
     logging.info (stats)
     return stats
+
+print(parse_transport_stream("../../media/test_arte.ts"))
