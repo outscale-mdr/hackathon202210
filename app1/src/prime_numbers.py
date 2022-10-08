@@ -5,6 +5,8 @@ Return a list of all the prime numbers inferior or equal to n
 def prime_numbers(n):
     
     def is_prime(n):
+        for i in range(1000):
+            continue
         if n < 2:
             return False
         for i in range(2,n):
