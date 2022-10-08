@@ -177,12 +177,11 @@ def parsePATSection(fileHandle, k):
     local = readFile(fileHandle,k,4)
     table_id = (local>>24)
     if (table_id != 0x0):
-        logging.error ('Ooops! error in parsePATSection()!')
         return
 
-    logging.debug ('------- PAT Information -------')
+
     section_length = (local>>8)&0xFFF
-    logging.debug ('section_length = %d' %section_length)
+
 
     transport_stream_id = (local&0xFF) << 8;
     local = readFile(fileHandle, k+4, 4)
@@ -192,7 +191,7 @@ def parsePATSection(fileHandle, k):
     current_next_indicator = (local>>16)&0x1
     section_number = (local>>8)&0xFF
     last_section_number = local&0xFF;
-    logging.debug ('section_number = %d, last_section_number = %d' %(section_number, last_section_number))
+
 
     length = section_length - 4 - 5
     j = k + 8
@@ -201,15 +200,11 @@ def parsePATSection(fileHandle, k):
         local = readFile(fileHandle, j, 4)
         program_number = (local >> 16)
         program_map_PID = local & 0x1FFF
-        logging.debug ('program_number = 0x%X' %program_number)
-        if (program_number == 0):
-            logging.debug ('network_PID = 0x%X' %program_map_PID)
-        else:
-            logging.debug ('program_map_PID = 0x%X' %program_map_PID)
+
         length = length - 4;
         j += 4
 
-        logging.debug ('')
+
 
 def parsePMTSection(fileHandle, k):
 
@@ -217,40 +212,40 @@ def parsePMTSection(fileHandle, k):
 
     table_id = (local>>24)
     if (table_id != 0x2):
-        logging.error ('Ooops! error in parsePATSection()!')
+
         return
 
-    logging.debug ('------- PMT Information -------')
+
 
     section_length = (local>>8)&0xFFF
-    logging.debug ('section_length = %d' %section_length)
+
 
     program_number = (local&0xFF) << 8;
 
     local = readFile(fileHandle, k+4, 4)
 
     program_number += (local>>24)&0xFF
-    logging.debug ('program_number = %d' %program_number)
+
 
     version_number = (local>>17)&0x1F
     current_next_indicator = (local>>16)&0x1
     section_number = (local>>8)&0xFF
     last_section_number = local&0xFF;
-    logging.debug ('section_number = %d, last_section_number = %d' %(section_number, last_section_number))
+
 
     local = readFile(fileHandle, k+8, 4)
 
     PCR_PID = (local>>16)&0x1FFF
-    logging.debug ('PCR_PID = 0x%X' %PCR_PID)
+
     program_info_length = (local&0xFFF)
-    logging.debug ('program_info_length = %d' %program_info_length)
+
 
     n = program_info_length
     m = k + 12;
     while (n>0):
         descriptor_tag = readFile(fileHandle, m, 1)
         descriptor_length = readFile(fileHandle, m+1, 1)
-        logging.debug ('descriptor_tag = %d, descriptor_length = %d' %(descriptor_tag, descriptor_length))
+
         n -= descriptor_length + 2
         m += descriptor_length + 2
 
@@ -265,48 +260,47 @@ def parsePMTSection(fileHandle, k):
         elementary_PID = (local2>>16)&0x1FFF
         ES_info_length = local2&0xFFF
 
-        logging.debug ('stream_type = 0x%X, elementary_PID = 0x%X, ES_info_length = %d' %(stream_type, elementary_PID, ES_info_length))
+
         n = ES_info_length
         m = j+5;
         while (n>0):
             descriptor_tag = readFile(fileHandle, m, 1)
             descriptor_length = readFile(fileHandle, m+1, 1)
-            logging.debug ('descriptor_tag = %d, descriptor_length = %d' %(descriptor_tag, descriptor_length))
+
             n -= descriptor_length + 2
             m += descriptor_length + 2
 
         j += 5 + ES_info_length
         length -= 5 + ES_info_length
 
-    logging.debug ('')
+
 
 def parseSITSection(fileHandle, k):
     local = readFile(fileHandle,k,4)
 
     table_id = (local>>24)
     if (table_id != 0x7F):
-        logging.error ('Ooops! error in parseSITSection()!')
+
         return
 
-    logging.debug ('------- SIT Information -------')
+
 
     section_length = (local>>8)&0xFFF
-    logging.debug ('section_length = %d' %section_length)
+
     local = readFile(fileHandle, k+4, 4)
 
     section_number = (local>>8)&0xFF
     last_section_number = local&0xFF;
-    logging.debug ('section_number = %d, last_section_number = %d' %(section_number, last_section_number))
+
     local = readFile(fileHandle, k+8, 2)
     transmission_info_loop_length = local&0xFFF
-    logging.debug ('transmission_info_loop_length = %d' %transmission_info_loop_length)
 
     n = transmission_info_loop_length
     m = k + 10;
     while (n>0):
         descriptor_tag = readFile(fileHandle, m, 1)
         descriptor_length = readFile(fileHandle, m+1, 1)
-        logging.debug ('descriptor_tag = %d, descriptor_length = %d' %(descriptor_tag, descriptor_length))
+
         n -= descriptor_length + 2
         m += descriptor_length + 2
 
@@ -317,20 +311,20 @@ def parseSITSection(fileHandle, k):
         local1 = readFile(fileHandle, j, 4)
         service_id = (local1>>16)&0xFFFF;
         service_loop_length = local1&0xFFF
-        logging.debug ('service_id = %d, service_loop_length = %d' %(service_id, service_loop_length))
+
 
         n = service_loop_length
         m = j+4;
         while (n>0):
             descriptor_tag = readFile(fileHandle, m, 1)
             descriptor_length = readFile(fileHandle, m+1, 1)
-            logging.debug ('descriptor_tag = %d, descriptor_length = %d' %(descriptor_tag, descriptor_length))
+
             n -= descriptor_length + 2
             m += descriptor_length + 2
 
         j += 4 + service_loop_length
         length -= 4 + service_loop_length
-    logging.debug ('')
+
 
 def getDeltaPcrPts(pid, pcr, pts):
     listDelta = []
@@ -406,9 +400,7 @@ def parsePcrPts(fileHandle):
             PacketHeader = readFile(fileHandle,n,4)
 
             syncByte = (PacketHeader>>24)
-            if syncByte != 0x47:
-                logging.error ('Ooops! Can NOT found Sync_Byte! maybe something wrong with the file')
-                break
+
 
             payload_unit_start_indicator = (PacketHeader>>22)&0x1
 
