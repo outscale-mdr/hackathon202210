@@ -322,18 +322,6 @@ def getDeltaPcrPts(pid, pcr, pts):
         listDelta.append (packet['pts'] / 90 - pcr[pcrIdx]['pcr'] / 27000)
     return listDelta
 
-def getDeltaStats (listDelta):
-    total = 0
-    minVal = 100000
-    maxVal = 0
-
-    for delta in listDelta:
-        total += delta
-        if delta < minVal:
-            minVal = delta
-        if delta > maxVal:
-            maxVal = delta
-    return { 'min': int(minVal), 'max': int(maxVal), 'average':int(total/len(listDelta))}
 
 def getTrackStat (pid, count, pts):
     firstPacket = 0
@@ -355,7 +343,7 @@ def getPidStats (pidList, pcr, pts):
 
     for pid in pidList:
         deltaPid = getDeltaPcrPts(pid['pid'], pcr, pts)
-        deltaStats = getDeltaStats (deltaPid)
+        deltaStats = {'min': min(deltaPid), 'max': max(deltaPid), 'average': sum(deltaPid) / len(deltaPid)}
         stat = getTrackStat (pid['pid'], pid['count'], pts)
 
         stats.append ({'pid': pid['pid'], 'deltaPcrPts': deltaStats, 'duration': stat['duration'], 'size': stat['size'], 'bandwidth': stat['bandwidth'] })
