@@ -74,6 +74,7 @@ def clone_items(product_id, new_product_id, coef):
         cur = conn.cursor()
 
         cur.execute(f"SELECT COUNT(*) FROM product_items WHERE product_id={product_id}")
+        conn.commit()
         avant = cur.fetchone()
 
         cur.execute(
@@ -84,6 +85,7 @@ def clone_items(product_id, new_product_id, coef):
              {new_product_id}, name, price*{coef} FROM product_items WHERE product_id={product_id}
              """
         )
+        conn.commit()
 
         return avant
 
