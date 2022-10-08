@@ -43,7 +43,7 @@ def product_items(product_id):
         cur.execute(f"""SELECT id, name, price FROM product_items WHERE product_id={product_id}""")
         items = cur.fetchall()
         # convert arrays into objects
-        items = [{"id":i[0], "product_id": product_id, "name": i[2], "price": i[3] } for i in items]
+        items = [{"id":i[0], "product_id": product_id, "name": i[1], "price": i[2] } for i in items]
 
         return jsonify(items), 200
 
