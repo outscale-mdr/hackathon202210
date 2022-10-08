@@ -6,7 +6,7 @@ import sys, os, re, datetime
 
 def main() -> int:
     watts = process_powertop()
-    process_output()
+    ret = process_output()
     time_sec = process_date()
     watts += process_iddle_consumption(time_sec)
     watts += process_traffic()
@@ -16,7 +16,7 @@ def main() -> int:
     with open(os.path.join('totals', 'total.txt'), "w") as f:
         f.write(str(watts))
 
-    return 0
+    return ret
 
 
 """
@@ -67,6 +67,7 @@ def process_output():
     expected_files = os.listdir('expected')
     assert(output_files == expected_files)
 
+    has_failed = False
     with open(os.path.join('totals', 'correctness.txt'), "w") as out:
         for file in output_files:
             with open(os.path.join('expected', file)) as f:
@@ -78,9 +79,10 @@ def process_output():
                 print("Expected:", expected)
                 print("Received output:", output)
                 out.write(f"{file} - ERROR\n")
+                has_failed = True
             else:
                 out.write(f"{file} - OK\n")
-
+    return has_failed
 
 def process_date():
     with open(os.path.join('metrics', 'start_date.txt')) as f:
