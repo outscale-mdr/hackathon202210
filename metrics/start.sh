@@ -1,6 +1,38 @@
 SSH="ssh -o StrictHostKeyChecking=no -i ~/.ssh/hackathon.rsa"
 SCP="scp -i ~/.ssh/hackathon.rsa"
 
+if [ -n "$1" ]; then
+    mkdir backup
+    cp -r expected input backup/
+    rm expected/* input/*
+    branch_name="$1"
+    echo $1
+    app_func="$(basename "$branch_name")"
+    echo $app_func
+    if [ "$app_func" == "transport_stream" ]; then
+        file_name=transport_stream
+    elif [ "$app_func" == "x_max" ]; then
+        file_name=get_x_max
+    elif [ "$app_func" == "fact" ]; then
+        file_name=fact
+    elif [ "$app_func" == "prime_numbers" ]; then
+        file_name=prime
+    elif [ "$app_func" == "decrypt_frame" ]; then
+        file_name=decrypt_frame
+    elif [ "$app_func" == "sinkaggregation" ]; then
+        file_name=sink_aggregation
+    elif [ "$app_func" == "store_prices" ]; then
+        file_name=store_prices
+    elif [ "$app_func" == "template" ]; then
+        file_name=template
+    else
+        echo "wrong name"
+        exit 1
+    fi
+    cp backup/expected/"$file_name".txt expected
+    cp backup/input/"$file_name".json input
+fi
+
 # Clean 
 rm -rf output
 rm -rf metrics
@@ -71,9 +103,17 @@ $SCP outscale@$app1ip:/data/output/* output/
 # Process collected files
 ./process.py
 if [ $? -ne 0 ]; then
+    if [ -n "$1" ]; then
+        cp backup/expected/* expected/
+        cp backup/input/* input/
+    fi
     exit 1
 fi
 
+if [ -n "$1" ]; then
+    cp backup/expected/* expected/
+    cp backup/input/* input/
+fi
 # === Outputs ===
 # 1. Total consumption of all VMs in Watts
 # 2. Total traffic from all VMs

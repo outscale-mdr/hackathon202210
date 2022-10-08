@@ -52,7 +52,14 @@ jobs:
       run: |
         sed -i "s%~/.ssh/hackathon.rsa%../hackathon.rsa%g" metrics/start.sh
     
-    - name: Run metrics
+    - name: Run metrics only PR
+      if: github.event_name == 'pull_request'
+      run : |
+        cd metrics
+        ./start.sh "$GITHUB_HEAD_REF"
+
+    - name: Run metrics main
+      if: github.event_name == 'push'
       run : |
         cd metrics
         ./start.sh
