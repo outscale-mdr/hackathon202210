@@ -1,8 +1,7 @@
 #!/usr/bin/python
 import os
 import re
-import _md5
-import hashlib
+from _md5 import md5
 
 """
  In this case you need to produce n files from a template, liste of id and two dates.
@@ -39,7 +38,7 @@ def templating_dlms(filename_id, dt_start, dt_stop):
 
 
 
-          md5_hash = _md5.md5()
+          md5_hash = md5()
           md5_hash.update(s.encode("UTF-8"))
 
           md5s.append(md5_hash.hexdigest())
