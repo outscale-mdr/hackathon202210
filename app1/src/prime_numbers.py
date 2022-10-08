@@ -29,10 +29,10 @@ Return a sum of all the prime numbers inferior or equal to n
 """
 def sum_prime_numbers(n):
 
-    S = 2
-
     if n < 2:
         return 0
+
+    S = 2
 
     prime = [True for _ in range(n + 1)]
 
