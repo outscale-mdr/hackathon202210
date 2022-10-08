@@ -1,8 +1,6 @@
 """
-
 This file is used to parse the mpeg-ts file in order to get the
 delta between PCR and PTS and in order to get stream element statistics
-
 MPEG-TS stream is the usual format used for IPTV (TV over IP), the format
 is basic, here some elements:
     - MPEG-TS is composed of 188 Bytes packets;
@@ -16,12 +14,11 @@ is basic, here some elements:
     - During streaming (real time), the delta between the packet arrival
     and the PCR is very important, this is something usually monitored
     in the stream pipeline.
-
 """
 
 import sys
 import struct
-import logging 
+import logging
 from optparse import OptionParser
 
 class SystemClock:
@@ -68,7 +65,8 @@ def readFile(fileHandle, startPos, width):
             raise IOError
         return struct.unpack('>B',string[:1])[0]
 
-def parseAdaptation_Field(fileHandle, n, PCR):
+def parseAdaptation_Field(fileHandle, startPos, PCR):
+    n = startPos
     flags = 0
     adaptation_field_length = readFile(fileHandle,n,1)
     if adaptation_field_length > 0:
@@ -81,7 +79,7 @@ def parseAdaptation_Field(fileHandle, n, PCR):
             time4 = readFile(fileHandle,n+5,1)
             time5 = readFile(fileHandle,n+6,1)
             time6 = readFile(fileHandle,n+7,1)
-           
+
             PCR_val  = time1 << 25
             PCR_val |= time2 << 17
             PCR_val |= time3 << 9
@@ -95,14 +93,16 @@ def parseAdaptation_Field(fileHandle, n, PCR):
             PCR.setPCR(PCR_val)
     return [adaptation_field_length + 1, flags]
 
-def getPTS(fileHandle, n):
+def getPTS(fileHandle, startPos):
+    n = startPos
+
     time1 = readFile(fileHandle,n,1)
     time2 = readFile(fileHandle,n+1,1)
     time3 = readFile(fileHandle,n+2,1)
     time4 = readFile(fileHandle,n+3,1)
     time5 = readFile(fileHandle,n+4,1)
 
-    PTS   = (time1 & 0x0E) >> 1 
+    PTS   = (time1 & 0x0E) >> 1
     PTS <<= 8
     PTS  |= time2
     PTS <<= 7
@@ -114,7 +114,8 @@ def getPTS(fileHandle, n):
 
     return PTS
 
-def parseIndividualPESPayload(fileHandle, n):
+def parseIndividualPESPayload(fileHandle, startPos):
+    n = startPos
     local = readFile(fileHandle,n,4)
     k = 0
     while((local&0xFFFFFF00) != 0x00000100):
@@ -131,7 +132,8 @@ def parseIndividualPESPayload(fileHandle, n):
         else:
             return "non_IDR_picture"
 
-def parsePESHeader(fileHandle, n, PESPktInfo):
+def parsePESHeader(fileHandle, startPos,PESPktInfo):
+    n = startPos
     stream_ID = readFile(fileHandle, n+3, 1)
     PES_packetLength = readFile(fileHandle, n+4, 2)
     PESPktInfo.setStreamID(stream_ID)
@@ -204,7 +206,7 @@ def parsePATSection(fileHandle, k):
             logging.debug ('program_map_PID = 0x%X' %program_map_PID)
         length = length - 4;
         j += 4
-        
+
         logging.debug ('')
 
 def parsePMTSection(fileHandle, k):
@@ -346,7 +348,7 @@ def getDeltaStats (listDelta):
     total = 0
     minVal = 100000
     maxVal = 0
-    
+
     for delta in listDelta:
         total += delta
         if (delta < minVal):
@@ -397,12 +399,12 @@ def parsePcrPts(fileHandle):
     PCRList = []
 
     try:
-        while True:
+        while(True):
 
             PacketHeader = readFile(fileHandle,n,4)
 
             syncByte = (PacketHeader>>24)
-            if syncByte != 0x47:
+            if (syncByte != 0x47):
                 logging.error ('Ooops! Can NOT found Sync_Byte! maybe something wrong with the file')
                 break
 
@@ -415,7 +417,7 @@ def parsePcrPts(fileHandle):
 
             if (adaptation_fieldc_trl == 0x2)|(adaptation_fieldc_trl == 0x3):
                 [Adaptation_Field_Length, flags] = parseAdaptation_Field(fileHandle,n+4,PCR)
-            
+
                 if (((flags>>4)&0x1)):
                     discontinuity = False
                     if (((flags>>7)&0x1)):
@@ -443,7 +445,7 @@ def parsePcrPts(fileHandle):
                             pidFound = True
                             break
 
-                    if not pidFound: 
+                    if not pidFound:
                         PESPidList.append ({'pid':PID, 'count':0})
 
                 elif (((PESstartCode&0xFFFFFF00) != 0x00000100)& \
@@ -464,7 +466,7 @@ def parsePcrPts(fileHandle):
                     elif (table_id == 0x2):
                         logging.debug ('pasing PMT Packet! packet No. %d, PID = 0x%X' %(packetCount, PID))
                         parsePMTSection(fileHandle, k)
-                    
+
                     elif (table_id == 0x7F):
                         logging.debug ('pasing SIT Packet! packet No. %d, PID = 0x%X' %(packetCount, PID))
                         parseSITSection(fileHandle, k)
@@ -476,7 +478,7 @@ def parsePcrPts(fileHandle):
                     break
 
             packetCount += 1
-   
+
     except IOError:
         logging.info ('IO error! maybe reached EOF')
         return [PESPidList, PCRList, PTSList]
@@ -487,10 +489,8 @@ def parsePcrPts(fileHandle):
 def parse_transport_stream(filename):
 
     fileHandle = open(filename,'rb')
-    
+
     [pesPidList, pcr, pts] = parsePcrPts(fileHandle)
     stats = getPidStats(pesPidList, pcr, pts)
     logging.info (stats)
     return stats
-
-parse_transport_stream("../../media/test_arte.ts")
