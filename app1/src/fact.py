@@ -9,7 +9,11 @@ import math
 """
 
 def factorielle(a):
+    if a < 0:
+        return 'undefined'
+    if a < 2:
+        return 1
     return math.factorial(a)
 
 def cmd_fact(n):
-    return str(math.factorial(n))
+    return str(factorielle(n))
