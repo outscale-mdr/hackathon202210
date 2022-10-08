@@ -73,6 +73,9 @@ def clone_items(product_id, new_product_id, coef):
 
         cur = conn.cursor()
 
+        cur.execute(f"SELECT COUNT(*) FROM product_items WHERE product_id={product_id}")
+        avant = cur.fetchone()
+
         cur.execute(
             f"""
              INSERT INTO product_items 
@@ -82,7 +85,7 @@ def clone_items(product_id, new_product_id, coef):
              """
         )
 
-        return len(cur.fetchall())
+        return avant
 
     except Exception as e:
         return jsonify(e.messages), 400
