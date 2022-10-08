@@ -1,4 +1,6 @@
-# x_max_v2.py = suppresion de d
+# x_max_v3.py : utilisation de math.max
+import math
+
 # computing a list of max from a key/value input
 # input :
 #     * a filename to a file with the list of couple of letter(key) and an integer (value) as (a,3) separate by ';' # output
@@ -31,9 +33,7 @@ def max_in_list(s):
 
 
 def get_x_max(path, n):
-    nbmax = int(n)
-    if nbmax < 1:
-        nbmax = 1
+    nbmax = math.max(1, int(n))
 
     flist = open(path, "r")
     s = flist.read()
