@@ -1,8 +1,11 @@
 import requests
+import logging
 
 def clone_product(product_id, new_product_id, coef):
     LIST_PRODUCT_URL = "http://ms1:8000/clone"
     items = requests.get(url = f"{LIST_PRODUCT_URL}/{product_id}/{new_product_id}/{coef}").text
+
+    logging.warning(items)
 
     return int(items)
 
