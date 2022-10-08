@@ -86,9 +86,9 @@ def parseAdaptation_Field(fileHandle, n, PCR):
             time1, time2, time3, time4, time5, time6 = struct.unpack('>6B', string)
 
             PCR_val  = time1 * 0x2000000
-            PCR_val |= time2 * 0x20000
-            PCR_val |= time3 * 0x200
-            PCR_val |= time4 * 2
+            PCR_val += time2 * 0x20000
+            PCR_val += time3 * 0x200
+            PCR_val += time4 * 2
             PCR_val |= (time5 & 0x80) >> 7
 
             PCR_val *= 300
