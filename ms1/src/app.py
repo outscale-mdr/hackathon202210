@@ -58,6 +58,42 @@ def product_items(product_id):
 
 
 """
+Cloning
+"""
+@app.route('/clone/<product_id>/<new_product_id>/<coef>')
+def clone_items(product_id, new_product_id, coef):
+    conn = None
+    cur = None
+    try:
+        conn = psycopg2.connect(
+            host=HOST,
+            database=DATABASE,
+            user=USERNAME,
+            password=PASSWORD)
+
+        cur = conn.cursor()
+
+        cur.execute(
+            f"""
+             INSERT INTO product_items 
+             (product_id, name, price)
+             SELECT 
+             {new_product_id}, name, price*{coef} FROM product_items WHERE product_id={product_id}
+             """
+        )
+
+        return len(cur.fetchall())
+
+    except Exception as e:
+        return jsonify(e.messages), 400
+
+    finally:
+        if cur:
+            cur.close()
+        if conn:
+            conn.close()
+
+"""
 Add new item into "product_items" table.
 Request paramaters:
     - id 
