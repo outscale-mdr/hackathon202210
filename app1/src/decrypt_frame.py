@@ -28,12 +28,8 @@ def to_unsigned(hexa_string, n):
 
 
 def decode_hex_to_dec(hexa_string):
-    len_string = len(hexa_string)
-    reversed_hexa_string = ""
-    for i in range(len_string, 0, -2):
-        reversed_hexa_string += hexa_string[i-2:i]
+    n = int(hexa_string[:2], 16)
 
-    n = int(reversed_hexa_string, 16)
     a = n%256
     if a<128:
         return a
