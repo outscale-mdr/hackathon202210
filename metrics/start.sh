@@ -19,11 +19,11 @@ if [ -n "$1" ]; then
         file_name=prime
     elif [ "$app_func" == "decrypt_frame" ]; then
         file_name=decrypt_frame
-    elif [ "$app_func" == "sinkaggregation" ]; then
+    elif [ "$app_func" == "sink_aggregation" ]; then
         file_name=sink_aggregation
     elif [ "$app_func" == "store_prices" ]; then
         file_name=store_prices
-    elif [ "$app_func" == "template" ]; then
+    elif [ "$app_func" == "generateDLMSCMD" ]; then
         file_name=template
     else
         echo "wrong name"
