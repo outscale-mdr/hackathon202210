@@ -474,4 +474,4 @@ def parse_transport_stream(filename):
     return stats
 
 
-print(parse_transport_stream("../../media/test_arte.ts"))
+# print(parse_transport_stream("../../media/test_arte.ts"))
